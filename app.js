@@ -36,6 +36,21 @@
     "Investigative Pro": `<rect x="7" y="10" width="28" height="38" rx="2.5" fill="#fbf3e4" ${O}/><path d="M12 18 H30 M12 24 H30 M12 30 H24" stroke="#87a5c6" stroke-width="2" stroke-linecap="round"/><path d="M40 40 L50 50" stroke="#3a2e2a" stroke-width="8" stroke-linecap="round"/><path d="M40 40 L50 50" stroke="#8a5a3c" stroke-width="4" stroke-linecap="round"/><circle cx="34" cy="34" r="11" fill="#cfe6ea" fill-opacity=".85" stroke="#3a2e2a" stroke-width="4"/><circle cx="34" cy="34" r="11" fill="none" stroke="#87a5c6" stroke-width="1.6"/><path d="M28 30 C29 27 31 26 33 26" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/>`,
     "Prime Time": `<path d="M16 8 H40 V20 C40 30 34 35 28 35 C22 35 16 30 16 20 Z" fill="#f4b942" ${O}/><path d="M16 12 H9 C9 22 13 25 17 25 M40 12 H47 C47 22 43 25 39 25" fill="none" ${O}/><path d="M25 35 H31 V42 H25 Z" fill="#f4b942" ${O}/><rect x="16" y="42" width="24" height="8" rx="2" fill="#8a5a3c" ${O}/><path d="M28 13 L30 18 L35 18 L31 21 L32.5 26 L28 23 L23.5 26 L25 21 L21 18 L26 18 Z" fill="#fff3c9" stroke="#3a2e2a" stroke-width="1.4" stroke-linejoin="round"/>`,
   };
+  // The grand prize: unlocked only when BOTH of you finish all 30 days.
+  const GRAND = "Documentary about the Goldsmith";
+  const GRAND_ART = `<svg class="prize" viewBox="0 0 96 96" width="96" height="96" aria-hidden="true" focusable="false">
+    <g transform="rotate(-14 12 34)"><rect x="12" y="22" width="58" height="12" rx="2" fill="#fff" ${O}/>
+      <path d="M20 22 L14 34 H22 L28 22 Z M36 22 L30 34 H38 L44 22 Z M52 22 L46 34 H54 L60 22 Z M68 22 L62 34 H70 V22 Z" fill="#3a2e2a"/></g>
+    <rect x="12" y="38" width="58" height="42" rx="4" fill="#4a4545" ${O}/>
+    <path d="M12 46 H70" stroke="#3a2e2a" stroke-width="2.5"/>
+    <path d="M18 54 H44 M18 61 H38 M18 68 H42" stroke="#fbf3e4" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="20" cy="42" r="2" fill="#e0443a"/>
+    <circle cx="66" cy="66" r="14" fill="none" stroke="#3a2e2a" stroke-width="10"/>
+    <circle cx="66" cy="66" r="14" fill="none" stroke="#f4b942" stroke-width="5"/>
+    <path d="M60 58 C61 55 63 54 65 54" stroke="#fff3c9" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M66 36 L75 45 L66 54 L57 45 Z" fill="#9fd3e0" ${O}/><path d="M57 45 H75" stroke="#3a2e2a" stroke-width="1.6"/>
+    ${SPARK(84, 30)}${SPARK(10, 14)}${SPARK(88, 84)}
+  </svg>`;
   const badgeSvg = (name) => `<svg class="prize" viewBox="0 0 56 56" width="56" height="56" aria-hidden="true" focusable="false">${BADGE_ART[name] || ""}</svg>`;
 
   const cfg = window.CHALLENGE_CONFIG || {};
@@ -304,9 +319,19 @@
     }).join("");
     const both = MILESTONES.filter((m) => perfectCount("braden") >= m && perfectCount("kat") >= m).length;
     const tCount = Array.from({ length: DAYS }, (_, i) => i + 1).filter(together).length;
+    const bp = perfectCount("braden"), kp = perfectCount("kat");
+    const gOn = bp >= DAYS && kp >= DAYS;
+    const meter = (who, v) => `<div class="grand-meter"><span>${who}</span><span class="meter" aria-hidden="true"><i style="width:${Math.round((Math.min(v, DAYS) / DAYS) * 100)}%"></i></span><span>${Math.min(v, DAYS)}/${DAYS}</span></div>`;
+    const grand = `
+      <div class="grand ${gOn ? "on" : "locked"}" aria-label="${GRAND}: ${gOn ? "unlocked" : `locked, Braden ${bp} and Kat ${kp} of ${DAYS} perfect days`}">
+        <small class="grand-kicker">The grand prize · both of you, all ${DAYS} days</small>
+        <span class="grand-wrap">${GRAND_ART}</span>
+        <b class="grand-name">${GRAND}</b>
+        ${gOn ? `<small class="grand-status">Unlocked! Lights, camera, action 🎬</small>` : meter("Braden", bp) + meter("Kat", kp)}
+      </div>`;
     return `<section class="card badges-card"><h3>Milestones</h3>${rows}
       <p class="joint">${both ? `💞 You've both unlocked ${both} of 4 together!` : "Unlock a badge at the same time to earn a joint celebration."}</p>
-      <p class="joint">💞 Perfect days together: <b>${tCount}</b></p></section>`;
+      <p class="joint">💞 Perfect days together: <b>${tCount}</b></p>${grand}</section>`;
   }
 
   function journalHtml() {

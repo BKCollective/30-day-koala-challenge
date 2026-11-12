@@ -242,3 +242,22 @@ footer { text-align: center; color: var(--ink-soft); margin-top: 28px; font-fami
 .note-save { background: var(--kat-soft); }
 .note-actions button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .note-actions button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- Grand prize (both of you, all 30 days) ---------- */
+.grand { position: relative; overflow: hidden; display: grid; justify-items: center; gap: 6px; margin-top: 16px; padding: 18px 16px 18px; border: 2.5px dashed var(--line); border-radius: 20px; background: #fff; text-align: center; }
+.grand-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.grand-wrap { display: grid; place-items: center; width: 150px; height: 150px; border-radius: 50%; background: var(--paper-2); border: 3px solid var(--line); }
+.grand-wrap .prize { width: 112px; height: 112px; }
+.grand-name { font-family: "Caveat", cursive; font-size: 1.9rem; line-height: 1.05; max-width: 18ch; }
+.grand-meter { display: grid; grid-template-columns: 4.5em 1fr 3.2em; align-items: center; gap: 8px; width: min(320px, 100%); font-size: 0.85rem; text-align: left; }
+.grand-meter .meter { width: 100%; margin: 0; height: 8px; }
+.grand-meter span:last-child { text-align: right; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.grand.locked .prize { filter: grayscale(1) contrast(0.75) brightness(1.1); opacity: 0.45; }
+.grand.locked .grand-name { color: var(--ink-soft); }
+.grand.on { border: 3px solid var(--ink); background: linear-gradient(#fff4cf, #ffe7a3); box-shadow: 0 4px 0 var(--ink); }
+.grand.on .grand-wrap { border-color: var(--ink); background: repeating-conic-gradient(from 0deg, #ffd66b 0 10deg, #fff4cf 10deg 20deg); animation: grand-spin 30s linear infinite; }
+.grand.on .grand-wrap .prize { animation: grand-counter 30s linear infinite; }
+.grand-status { font-weight: 600; color: #8a5a3c; font-size: 0.95rem; }
+.grand.on::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.8) 50%, transparent 60%); transform: translateX(-120%); animation: badge-shine 4s ease-in-out infinite; pointer-events: none; }
+@keyframes grand-spin { to { transform: rotate(360deg); } }
+@keyframes grand-counter { to { transform: rotate(-360deg); } }
