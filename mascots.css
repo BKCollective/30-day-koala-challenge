@@ -1,0 +1,20 @@
+/*
+ * MASCOT ANIMATION SWAP-IN POINT (owned by Claude Design).
+ * Style hooks: svg.mascot[data-who][data-mood]. Keep everything inside prefers-reduced-motion guards.
+ */
+.mascot { width: 100%; height: 100%; overflow: visible; }
+.mascot .m-body { transform-origin: 50% 90%; }
+
+.mascot[data-mood="sleepy"] .m-body { animation: m-breathe 4s ease-in-out infinite; }
+.mascot[data-mood="perking"] .m-body { animation: m-sway 3s ease-in-out infinite; }
+.mascot[data-mood="almost"] .m-body { animation: m-bounce 1.6s ease-in-out infinite; }
+.mascot[data-mood="celebrating"] .m-body { animation: m-dance 0.7s ease-in-out infinite; }
+
+@keyframes m-breathe { 50% { transform: scale(1.02, 0.98); } }
+@keyframes m-sway { 50% { transform: rotate(3deg); } }
+@keyframes m-bounce { 50% { transform: translateY(-4px); } }
+@keyframes m-dance { 25% { transform: translateY(-8px) rotate(-5deg); } 75% { transform: translateY(-8px) rotate(5deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot .m-body { animation: none !important; }
+}
