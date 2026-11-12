@@ -27,6 +27,19 @@
 
 <main id="app" class="wrap"></main>
 
+<div id="note-modal" class="modal" hidden>
+  <div class="modal-card note-modal-card" role="dialog" aria-modal="true" aria-labelledby="note-title">
+    <h2 id="note-title">Note 💌</h2>
+    <p class="note-sub" id="note-sub"></p>
+    <textarea id="note-text" rows="5" maxlength="500" aria-labelledby="note-title"></textarea>
+    <div class="note-count" id="note-count" aria-live="polite">0 / 500</div>
+    <div class="note-actions">
+      <button type="button" class="note-cancel" id="note-cancel">Cancel</button>
+      <button type="button" class="note-save" id="note-save">Send note</button>
+    </div>
+  </div>
+</div>
+
 <div id="who-modal" class="modal" hidden>
   <div class="modal-card">
     <h2>Who's this? 🐨</h2>

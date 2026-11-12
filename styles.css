@@ -77,8 +77,15 @@ footer { display: table; margin-left: auto; margin-right: auto; }
 .col.perfect { box-shadow: 0 5px 0 var(--ink), 0 0 0 5px color-mix(in srgb, var(--gold) 60%, transparent), var(--shadow); }
 .col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .mascot-wrap { width: 84px; height: 84px; flex: none; }
-.col-title { flex: 1; }
+.col-title { flex: 1; min-width: 0; display: grid; gap: 4px; }
 .col-title h2 { margin: 0; font-size: 1.5rem; }
+.name-row, .sub-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.day-chip { display: inline-block; font-size: 0.78rem; font-weight: 600; padding: 2px 9px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; white-space: nowrap; }
+.day-chip.is-today { background: var(--gold); }
+.note-btn { font: inherit; font-size: 0.82rem; font-weight: 600; min-height: 36px; padding: 4px 11px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; color: var(--ink); box-shadow: 0 2px 0 var(--ink); cursor: pointer; white-space: nowrap; }
+.col.kat .note-btn { background: var(--kat-soft); } .col.braden .note-btn { background: var(--braden-soft); }
+.note-btn:active { transform: translateY(2px); box-shadow: none; }
+.note-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .tag { font-family: "Caveat", cursive; font-weight: 700; font-size: 1.15rem; color: var(--ink-soft); }
 .score { font-size: 2rem; font-weight: 700; }
 .score small { font-size: 1rem; color: var(--ink-soft); }
@@ -134,27 +141,49 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--gold) 70%, transpar
 .pc { margin-left: auto; color: var(--ink-soft); font-size: 0.85rem; }
 .cells { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
 @media (max-width: 520px) { .cells { grid-template-columns: repeat(6, 1fr); } }
-.cell { position: relative; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); font: inherit; display: inline-grid; place-items: center; padding: 0; cursor: pointer; font-size: 1rem; }
-.cell i { position: absolute; bottom: -2px; right: 1px; font-size: 0.55rem; font-style: normal; color: var(--ink-soft); }
+.cell { position: relative; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--ink); background: var(--paper); font: inherit; color: var(--ink); display: inline-grid; place-items: center; padding: 0; cursor: pointer; font-size: 1rem; transition: transform 0.15s; }
+.cell .num { font-weight: 700; font-size: 0.95rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.cell .star { position: absolute; top: -7px; right: -5px; font-size: 0.95rem; line-height: 1; color: var(--gold); -webkit-text-stroke: 1.2px var(--ink); }
 .cell.full { background: color-mix(in srgb, var(--gold) 55%, #fff); }
 .cell.half { background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 55%, #fff) 50%, var(--paper) 50%); }
 .cell.future { opacity: 0.4; cursor: default; border-style: dashed; }
-.cell.today { box-shadow: 0 0 0 3px var(--gold); }
-.cell.sel { transform: scale(1.12); }
-.cell.together { box-shadow: 0 0 0 3px #ff8fb0; }
+.cell.full .num { font-size: 1rem; }
+/* today: a gold halo; showing (the day the boxes above belong to): dark ring, lifted, with a pointer */
+.cell.today { box-shadow: 0 0 0 3px var(--gold), 0 0 10px 2px color-mix(in srgb, var(--gold) 60%, transparent); }
+.cell.sel { transform: scale(1.14); outline: 3px solid var(--ink); outline-offset: 2px; z-index: 1; }
+.cell.sel::before { content: ""; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--ink); }
+.cell.together { border-color: #e05e8a; border-width: 3px; }
 .cell.together::after { content: "💞"; position: absolute; top: -7px; left: -5px; font-size: 0.75rem; }
 .legend { font-size: 0.8rem; color: var(--ink-soft); display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 0; }
-.legend .cell { width: 20px; height: 20px; font-size: 0.7rem; cursor: default; }
+.legend .cell { width: 24px; height: 24px; cursor: default; }
+.legend .cell .num { font-size: 0.68rem; }
+.legend .cell.sel { transform: none; outline-width: 2px; }
+.legend .cell.sel::before { display: none; }
 
 .badge-row h4 { margin: 8px 0 4px; }
 .badge-row.braden h4 { color: var(--braden); }
 .badge-row.kat h4 { color: var(--kat); }
 .badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 @media (max-width: 520px) { .badges { grid-template-columns: repeat(2, 1fr); } }
-.badge { text-align: center; padding: 8px 4px; border: 2px dashed var(--line); border-radius: 14px; background: #fff; opacity: 0.6; display: grid; gap: 1px; }
-.badge.on { opacity: 1; border: 2px solid var(--gold); background: #fff4cf; }
-.badge .medal { font-size: 1.6rem; }
+.badge { position: relative; text-align: center; padding: 10px 6px 10px; border: 2px solid var(--line); border-radius: 16px; background: #fff; display: grid; justify-items: center; gap: 2px; overflow: hidden; }
+.badge b { font-size: 0.9rem; line-height: 1.15; }
 .badge small { color: var(--ink-soft); font-size: 0.72rem; line-height: 1.15; }
+.prize-wrap { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--paper-2); margin-bottom: 2px; }
+.prize { display: block; overflow: visible; }
+/* locked: a grey preview of the prize */
+.badge.locked .prize { filter: grayscale(1) contrast(0.75) brightness(1.1); opacity: 0.45; }
+.badge.locked b { color: var(--ink-soft); }
+.meter { width: 70%; height: 6px; margin-top: 4px; border-radius: 999px; background: var(--paper-2); border: 1.5px solid var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--gold); border-radius: 999px; }
+/* unlocked: full colour, warm card, a sunburst and a slow shine */
+.badge.on { border: 2.5px solid var(--ink); background: #fff4cf; box-shadow: 0 3px 0 var(--ink); }
+.badge.on .prize-wrap { background: repeating-conic-gradient(from 0deg, #ffe7a3 0 12deg, #fff4cf 12deg 24deg); box-shadow: 0 0 0 2.5px var(--ink); }
+.badge.on .meter { display: none; }
+.badge.on small { color: #8a5a3c; font-weight: 600; }
+.badge.on::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.75) 50%, transparent 60%); transform: translateX(-120%); animation: badge-shine 4s ease-in-out infinite; pointer-events: none; }
+.badge.on .prize { animation: badge-bob 3s ease-in-out infinite; }
+@keyframes badge-shine { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+@keyframes badge-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-3px) rotate(3deg); } }
 .joint { margin: 10px 0 0; font-size: 0.92rem; }
 
 .journal details { border-top: 1.5px dashed var(--line); padding: 6px 0; }
@@ -202,3 +231,16 @@ footer { text-align: center; color: var(--ink-soft); margin-top: 28px; font-fami
 .cloud-dot:nth-of-type(4) { animation-delay: 0.2s; }
 .cloud-dot:nth-of-type(5) { animation-delay: 0.4s; }
 @keyframes cloud-dot { 0%, 60%, 100% { transform: none; opacity: 0.55; } 30% { transform: translateY(-3px); opacity: 1; } }
+
+/* ---------- Note modal ---------- */
+.note-modal-card { max-width: 420px; text-align: left; }
+.note-modal-card h2 { font-family: "Caveat", cursive; font-size: 2rem; line-height: 1; }
+.note-sub { margin: 6px 0 10px; color: var(--ink-soft); font-size: 0.92rem; }
+.note-modal-card textarea { margin-top: 0; min-height: 120px; font-size: 1.05rem; }
+.note-count { text-align: right; font-size: 0.78rem; color: var(--ink-soft); margin-top: 4px; }
+.note-actions { display: flex; gap: 10px; margin-top: 12px; }
+.note-actions button { flex: 1; font: inherit; font-weight: 600; font-size: 1.05rem; min-height: 48px; border: 2.5px solid var(--ink); border-radius: 16px; box-shadow: 0 3px 0 var(--ink); cursor: pointer; color: var(--ink); }
+.note-cancel { background: #fff; }
+.note-save { background: var(--kat-soft); }
+.note-actions button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.note-actions button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }

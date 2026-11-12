@@ -23,6 +23,21 @@
   };
   const MILESTONES = [7, 14, 21, 30];
 
+  // One little prize drawing per badge (viewBox 0 0 56 56). Locked badges show it greyed out.
+  const O = 'stroke="#3a2e2a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+  const SPARK = (x, y) => `<path d="M${x} ${y - 5} L${x + 1.4} ${y - 1.4} L${x + 5} ${y} L${x + 1.4} ${y + 1.4} L${x} ${y + 5} L${x - 1.4} ${y + 1.4} L${x - 5} ${y} L${x - 1.4} ${y - 1.4} Z" fill="#fff3c9" stroke="#3a2e2a" stroke-width="1.4" stroke-linejoin="round"/>`;
+  const BADGE_ART = {
+    "First Ingot": `<path d="M7 44 L14 28 H42 L49 44 Z" fill="#f4b942" ${O}/><path d="M14 28 L19 20 H37 L42 28 Z" fill="#f9d77e" ${O}/><path d="M18 38 H30" stroke="#fff3c9" stroke-width="2.5" stroke-linecap="round"/>${SPARK(45, 14)}`,
+    "Fine Gold": `<circle cx="28" cy="35" r="13" fill="none" stroke="#3a2e2a" stroke-width="10"/><circle cx="28" cy="35" r="13" fill="none" stroke="#f4b942" stroke-width="5"/><path d="M28 7 L36 15 L28 24 L20 15 Z" fill="#9fd3e0" ${O}/><path d="M20 15 H36" stroke="#3a2e2a" stroke-width="1.6"/>${SPARK(44, 10)}`,
+    "Master Smith": `<path d="M8 30 H42 C42 35 37 37 33 37 V43 H40 V49 H14 V43 H21 V37 C14 37 10 34 8 30 Z" fill="#6c6564" ${O}/><path d="M24 26 L40 8" stroke="#3a2e2a" stroke-width="8" stroke-linecap="round"/><path d="M24 26 L40 8" stroke="#8a5a3c" stroke-width="4" stroke-linecap="round"/><rect x="33" y="2" width="18" height="10" rx="2" transform="rotate(42 42 7)" fill="#c9c4bc" ${O}/>${SPARK(14, 20)}`,
+    "Heart of Gold": `<path d="M28 9 V14" stroke="#3a2e2a" stroke-width="2.5"/><circle cx="28" cy="8" r="3.5" fill="none" stroke="#f4b942" stroke-width="2.5"/><path d="M28 48 C10 37 6 27 12 20 C17 14 25 16 28 22 C31 16 39 14 44 20 C50 27 46 37 28 48 Z" fill="#f4b942" ${O}/><path d="M17 25 C18 22 21 21 23 22" stroke="#fff3c9" stroke-width="2.5" stroke-linecap="round" fill="none"/>${SPARK(46, 12)}`,
+    "First Frame": `<rect x="10" y="6" width="36" height="44" rx="3" fill="#fff" ${O}/><rect x="14" y="10" width="28" height="26" fill="#b9d7e5" ${O}/><path d="M14 31 C20 25 26 30 30 27 C34 24 38 27 42 25 V36 H14 Z" fill="#7fae8b" stroke="#3a2e2a" stroke-width="1.8" stroke-linejoin="round"/><circle cx="35" cy="17" r="3.5" fill="#f4b942" stroke="#3a2e2a" stroke-width="1.6"/><path d="M18 43 H32" stroke="#d9738f" stroke-width="2.5" stroke-linecap="round"/>`,
+    "Breaking Story": `<path d="M8 12 H42 L48 18 V48 H8 Z" fill="#fbf3e4" ${O}/><path d="M42 12 V18 H48" fill="none" ${O}/><rect x="12" y="17" width="26" height="7" rx="1.5" fill="#e0443a" stroke="#3a2e2a" stroke-width="1.6"/><rect x="12" y="28" width="13" height="12" rx="1.5" fill="#e9a3b5" stroke="#3a2e2a" stroke-width="1.6"/><path d="M29 29 H43 M29 34 H43 M29 39 H39 M12 44 H43" stroke="#3a2e2a" stroke-width="1.8" stroke-linecap="round"/>`,
+    "Investigative Pro": `<rect x="7" y="10" width="28" height="38" rx="2.5" fill="#fbf3e4" ${O}/><path d="M12 18 H30 M12 24 H30 M12 30 H24" stroke="#87a5c6" stroke-width="2" stroke-linecap="round"/><path d="M40 40 L50 50" stroke="#3a2e2a" stroke-width="8" stroke-linecap="round"/><path d="M40 40 L50 50" stroke="#8a5a3c" stroke-width="4" stroke-linecap="round"/><circle cx="34" cy="34" r="11" fill="#cfe6ea" fill-opacity=".85" stroke="#3a2e2a" stroke-width="4"/><circle cx="34" cy="34" r="11" fill="none" stroke="#87a5c6" stroke-width="1.6"/><path d="M28 30 C29 27 31 26 33 26" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/>`,
+    "Prime Time": `<path d="M16 8 H40 V20 C40 30 34 35 28 35 C22 35 16 30 16 20 Z" fill="#f4b942" ${O}/><path d="M16 12 H9 C9 22 13 25 17 25 M40 12 H47 C47 22 43 25 39 25" fill="none" ${O}/><path d="M25 35 H31 V42 H25 Z" fill="#f4b942" ${O}/><rect x="16" y="42" width="24" height="8" rx="2" fill="#8a5a3c" ${O}/><path d="M28 13 L30 18 L35 18 L31 21 L32.5 26 L28 23 L23.5 26 L25 21 L21 18 L26 18 Z" fill="#fff3c9" stroke="#3a2e2a" stroke-width="1.4" stroke-linejoin="round"/>`,
+  };
+  const badgeSvg = (name) => `<svg class="prize" viewBox="0 0 56 56" width="56" height="56" aria-hidden="true" focusable="false">${BADGE_ART[name] || ""}</svg>`;
+
   const cfg = window.CHALLENGE_CONFIG || {};
   const qs = new URLSearchParams(location.search);
   const t0 = Date.now();
@@ -185,15 +200,24 @@
     const tag = mine ? "Your side" : `${PEOPLE[p]}'s side 💛`;
     const items = ITEMS.map((it) => checkHtml(p, it.key, it.label, it.icon, r[it.key], editable, "")).join("");
     const exId = `ex-${p}`;
+    const today = curDay();
+    const isToday = d === today;
+    const dayChip = `<span class="day-chip ${isToday ? "is-today" : ""}">Day ${d} · ${isToday ? "Today" : dayDate(d)}</span>`;
+    const hasNote = !!(r.note_to_other || "").trim();
+    const noteBtn = editable
+      ? `<button type="button" class="note-btn ${hasNote ? "has" : ""}" data-note="${d}" aria-label="${hasNote ? "Edit your" : "Write a"} note to ${PEOPLE[OTHER[p]]}">💌 ${hasNote ? "Edit note" : "Note"}</button>`
+      : "";
     return `
     <section class="col ${p} ${mine ? "mine" : "theirs"} ${perfect(r) ? "perfect" : ""}" data-person="${p}">
-      ${mine ? "" : bubbleHtml(p, d, mine, open)}
+      ${bubbleHtml(p, d, mine)}
       <div class="col-head">
         <div class="mascot-wrap">${window.Mascots.render(p, moodFor(r))}</div>
-        <div class="col-title"><h2>${PEOPLE[p]}</h2><span class="tag">${tag}</span></div>
+        <div class="col-title">
+          <div class="name-row"><h2>${PEOPLE[p]}</h2>${noteBtn}</div>
+          <div class="sub-row"><span class="tag">${tag}</span>${dayChip}</div>
+        </div>
         <div class="score" aria-label="${n} of 4 done">${n}<small>/4</small></div>
       </div>
-      ${mine ? bubbleHtml(p, d, mine, open) : ""}
       <div class="checks">${items}</div>
       <div class="headliner">
         ${checkHtml(p, "exercised", "Exercised today", "💪", r.exercised, editable, "big")}
@@ -212,22 +236,19 @@
     </label>`;
   }
 
-  // Each koala "says" that person's note to the other one, as a speech bubble under the avatar.
-  // Your own bubble is where you write; the other koala's bubble shows what they wrote to you.
+  // Each koala "says" that person's note to the other one, as a speech bubble above the avatar.
+  // Notes are written in the note modal (the button next to your name).
   const shownNotes = {};
-  function bubbleHtml(p, d, mine, open) {
+  function bubbleHtml(p, d, mine) {
     const r = get(p, d);
-    const text = r.note_to_other || "";
-    const to = PEOPLE[OTHER[p]];
-    if (mine) {
-      return `<div class="bubble mine ${p}">
-        <label class="bubble-to" for="note-write">Note to ${to} 💌</label>
-        <textarea id="note-write" data-person="${p}" data-field="note_to_other" rows="2" maxlength="500"
-          placeholder="${open ? `Something sweet, silly or encouraging for ${to}…` : "Opens when the day starts"}" ${open ? "" : "readonly"}>${esc(text)}</textarea>
-      </div>`;
-    }
-    const pop = text && !shownNotes[p + d] ? " pop" : "";
+    const text = (r.note_to_other || "").trim();
+    const seen = shownNotes[p + d];
+    const pop = text && seen !== undefined && seen !== text ? " pop" : "";
     shownNotes[p + d] = text;
+    if (mine) {
+      if (!text) return "";
+      return `<div class="bubble above ${p}${pop}"><span class="bubble-to">You said to ${PEOPLE[OTHER[p]]}</span>${esc(text)}</div>`;
+    }
     // no note yet: a little thought cloud with "..." floating over their koala
     if (!text) return `<div class="bubble-cloud" role="img" aria-label="No note from ${PEOPLE[p]} yet">
       <svg viewBox="0 0 100 74" width="100" height="74" aria-hidden="true" focusable="false">
@@ -241,6 +262,7 @@
 
   function stripHtml(p) {
     const c = openThrough();
+    const today = curDay();
     const sel = selectedDay();
     let cells = "";
     for (let d = 1; d <= DAYS; d++) {
@@ -250,11 +272,12 @@
       if (d > c) cls += " future";
       else if (n === 4) cls += " full";
       else if (n > 0) cls += " half";
-      if (d === c) cls += " today";
+      if (d === today) cls += " today";
       if (d === sel) cls += " sel";
       if (together(d)) cls += " together";
-      const inner = n === 4 ? "⭐" : "";
-      cells += `<button class="${cls}" data-day="${d}" ${d > c ? "disabled" : ""} aria-label="Day ${d}, ${n} of 4">${inner}<i>${d}</i></button>`;
+      const star = n === 4 ? '<span class="star" aria-hidden="true">★</span>' : "";
+      const label = `Day ${d}${d === today ? " (today)" : ""}, ${n} of 4${d === sel ? ", showing" : ""}`;
+      cells += `<button class="${cls}" data-day="${d}" ${d > c ? "disabled" : ""} ${d === sel ? 'aria-current="date"' : ""} aria-label="${label}"><span class="num">${d}</span>${star}</button>`;
     }
     const st = streak(p);
     const pc = perfectCount(p);
@@ -270,8 +293,11 @@
       const pc = perfectCount(p);
       const b = MILESTONES.map((m, i) => {
         const on = pc >= m;
-        return `<div class="badge ${on ? "on" : ""}" title="${on ? "Unlocked" : `Locked: ${m} perfect days`}">
-          <span class="medal">${on ? "🏅" : "🔒"}</span><b>Day ${m}</b><small>${BADGES[p][i]}</small></div>`;
+        const name = BADGES[p][i];
+        const status = on ? "Unlocked!" : `${Math.min(pc, m)} of ${m} perfect days`;
+        return `<div class="badge ${on ? "on" : "locked"}" aria-label="${name}: ${on ? "unlocked" : "locked, " + status}">
+          <span class="prize-wrap">${badgeSvg(name)}</span><b>${name}</b><small>${status}</small>
+          <span class="meter" aria-hidden="true"><i style="width:${Math.round((Math.min(pc, m) / m) * 100)}%"></i></span></div>`;
       }).join("");
       return `<div class="badge-row ${p}"><h4>${PEOPLE[p]}</h4><div class="badges">${b}</div></div>`;
     }).join("");
@@ -324,7 +350,7 @@
       <div class="cols">${store.who === "kat" ? columnHtml("kat", d) + columnHtml("braden", d) : columnHtml("braden", d) + columnHtml("kat", d)}</div>
       ${forestHtml(grown)}
       <section class="card strips"><h3>The 30-day card</h3>${stripHtml("braden")}${stripHtml("kat")}
-        <p class="legend"><span class="cell full">⭐</span> perfect <span class="cell half"></span> partial <span class="cell"></span> empty · pink ring = both perfect 💞</p></section>
+        <p class="legend"><span class="cell full"><span class="num">4</span></span> perfect <span class="cell half"><span class="num">2</span></span> partial <span class="cell"><span class="num">1</span></span> empty <span class="cell today"><span class="num">9</span></span> today <span class="cell sel"><span class="num">6</span></span> showing · pink = both perfect 💞</p></section>
       ${badgesHtml()}
       ${journalHtml()}
       <footer>Made with 💛 for Braden &amp; Kat · Nov 12 to Dec 12, 2026</footer>`;
@@ -339,6 +365,47 @@
       window.Grove.mount(document.getElementById("grove-mini"), grown);
     }
   }
+
+  // ---------- Note modal ----------
+  let noteDay = 0, noteBack = null;
+  function openNote(d) {
+    const me = store.who;
+    if (!me) return;
+    noteDay = d;
+    noteBack = document.activeElement;
+    const to = PEOPLE[OTHER[me]];
+    const m = document.getElementById("note-modal");
+    const ta = document.getElementById("note-text");
+    document.getElementById("note-title").textContent = `Note to ${to} 💌`;
+    document.getElementById("note-sub").textContent = `Day ${d} · ${dayDate(d)}. It pops up above your koala on ${to}'s screen.`;
+    ta.placeholder = `Something sweet, silly or encouraging for ${to}…`;
+    ta.value = get(me, d).note_to_other || "";
+    document.getElementById("note-count").textContent = `${ta.value.length} / 500`;
+    m.hidden = false;
+    ta.focus();
+    try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (e) {}
+  }
+  function closeNote() {
+    const m = document.getElementById("note-modal");
+    if (!m || m.hidden) return;
+    m.hidden = true;
+    const back = document.querySelector(`.col.${store.who} .note-btn`) || noteBack;
+    if (back && back.focus) back.focus();
+  }
+  function sendNote() {
+    const me = store.who;
+    if (!me || !noteDay) return closeNote();
+    const text = document.getElementById("note-text").value.trim();
+    save(me, noteDay, { note_to_other: text });
+    document.getElementById("note-modal").hidden = true;
+    render();
+    const btn = document.querySelector(`.col.${me} .note-btn`);
+    if (btn) btn.focus();
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeNote();
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && e.target.id === "note-text") sendNote();
+  });
 
   // ---------- Countdown ----------
   function tickCountdown() {
@@ -391,6 +458,10 @@
 
   document.addEventListener("input", (e) => {
     const t = e.target;
+    if (t.id === "note-text") {
+      document.getElementById("note-count").textContent = `${t.value.length} / 500`;
+      return;
+    }
     if (t.tagName !== "TEXTAREA" || t.dataset.person !== store.who) return;
     save(t.dataset.person, selectedDay(), { [t.dataset.field]: t.value }, true);
   });
@@ -405,6 +476,10 @@
       render();
       return;
     }
+    const noteBtn = t.closest("[data-note]");
+    if (noteBtn) { openNote(Number(noteBtn.dataset.note)); return; }
+    if (t.id === "note-save") { sendNote(); return; }
+    if (t.id === "note-cancel" || t.id === "note-modal") { closeNote(); return; }
     if (t.closest("#see-forest")) {
       openForest();
       return;
