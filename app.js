@@ -204,7 +204,8 @@
     const isToday = d === today;
     const dayChip = `<span class="day-chip ${isToday ? "is-today" : ""}">Day ${d} · ${isToday ? "Today" : dayDate(d)}</span>`;
     const hasNote = !!(r.note_to_other || "").trim();
-    const noteBtn = editable
+    // notes can be written from before the challenge starts (for day 1) through today
+    const noteBtn = mine && d >= 1 && d <= Math.max(c, 1)
       ? `<button type="button" class="note-btn ${hasNote ? "has" : ""}" data-note="${d}" aria-label="${hasNote ? "Edit your" : "Write a"} note to ${PEOPLE[OTHER[p]]}">💌 ${hasNote ? "Edit note" : "Note"}</button>`
       : "";
     return `

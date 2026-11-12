@@ -148,17 +148,15 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--gold) 70%, transpar
 .cell.half { background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 55%, #fff) 50%, var(--paper) 50%); }
 .cell.future { opacity: 0.4; cursor: default; border-style: dashed; }
 .cell.full .num { font-size: 1rem; }
-/* today: a gold halo; showing (the day the boxes above belong to): dark ring, lifted, with a pointer */
-.cell.today { box-shadow: 0 0 0 3px var(--gold), 0 0 10px 2px color-mix(in srgb, var(--gold) 60%, transparent); }
-.cell.sel { transform: scale(1.14); outline: 3px solid var(--ink); outline-offset: 2px; z-index: 1; }
-.cell.sel::before { content: ""; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--ink); }
+/* today: a soft gold glow; showing (the day the boxes above belong to): a solid green ring in place of the border */
+.cell.today { box-shadow: 0 0 8px 2px color-mix(in srgb, var(--gold) 65%, transparent); }
+.cells .cell.sel, .legend .cell.sel { border: 3px solid var(--sage); opacity: 1; color: var(--ink); }
 .cell.together { border-color: #e05e8a; border-width: 3px; }
 .cell.together::after { content: "💞"; position: absolute; top: -7px; left: -5px; font-size: 0.75rem; }
 .legend { font-size: 0.8rem; color: var(--ink-soft); display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 0; }
 .legend .cell { width: 24px; height: 24px; cursor: default; }
 .legend .cell .num { font-size: 0.68rem; }
-.legend .cell.sel { transform: none; outline-width: 2px; }
-.legend .cell.sel::before { display: none; }
+
 
 .badge-row h4 { margin: 8px 0 4px; }
 .badge-row.braden h4 { color: var(--braden); }
