@@ -29,7 +29,7 @@
   const nowMs = () => (qs.get("now") ? Date.parse(qs.get("now")) + (Date.now() - t0) : Date.now());
 
   // ---------- State ----------
-  const store = { entries: {}, who: null, selected: null, openNotes: {}, mode: "local", status: "" };
+  const store = { entries: {}, who: null, selected: null, mode: "local", status: "" };
   try { store.who = localStorage.getItem("c30_who"); } catch (e) {}
   if (!PEOPLE[store.who]) store.who = null;
   let sb = null;
@@ -187,11 +187,13 @@
     const exId = `ex-${p}`;
     return `
     <section class="col ${p} ${mine ? "mine" : "theirs"} ${perfect(r) ? "perfect" : ""}" data-person="${p}">
+      ${mine ? "" : bubbleHtml(p, d, mine, open)}
       <div class="col-head">
         <div class="mascot-wrap">${window.Mascots.render(p, moodFor(r))}</div>
         <div class="col-title"><h2>${PEOPLE[p]}</h2><span class="tag">${tag}</span></div>
         <div class="score" aria-label="${n} of 4 done">${n}<small>/4</small></div>
       </div>
+      ${mine ? bubbleHtml(p, d, mine, open) : ""}
       <div class="checks">${items}</div>
       <div class="headliner">
         ${checkHtml(p, "exercised", "Exercised today", "💪", r.exercised, editable, "big")}
@@ -210,31 +212,31 @@
     </label>`;
   }
 
-  function notesHtml(d) {
-    const me = store.who;
-    if (!me) return "";
-    const them = OTHER[me];
-    const c = openThrough();
-    const open = d >= 1 && d <= c;
-    const mineR = get(me, d);
-    const theirR = get(them, d);
-    const isOpen = !!store.openNotes[d];
-    const has = !!theirR.note_to_other.trim();
-    return `
-    <section class="notes">
-      <div class="note-card write">
-        <h3>Note to ${PEOPLE[them]} ✏️</h3>
-        <textarea id="note-write" data-person="${me}" data-field="note_to_other" rows="3" maxlength="500"
-          placeholder="${open ? `Something sweet, silly or encouraging for ${PEOPLE[them]}…` : "Opens when the day starts"}" ${open ? "" : "readonly"}>${esc(mineR.note_to_other)}</textarea>
-      </div>
-      <div class="note-card read">
-        <h3>Note from ${PEOPLE[them]} 💌</h3>
-        <button class="envelope ${has ? "has" : ""} ${isOpen ? "open" : ""}" data-envelope="${d}" ${has ? "" : "disabled"}>
-          <span class="env-icon">${isOpen && has ? "📖" : has ? "💌" : "📭"}</span>
-          <span class="env-text">${has ? (isOpen ? esc(theirR.note_to_other) : "Tap to open") : "Nothing yet today"}</span>
-        </button>
-      </div>
-    </section>`;
+  // Each koala "says" that person's note to the other one, as a speech bubble under the avatar.
+  // Your own bubble is where you write; the other koala's bubble shows what they wrote to you.
+  const shownNotes = {};
+  function bubbleHtml(p, d, mine, open) {
+    const r = get(p, d);
+    const text = r.note_to_other || "";
+    const to = PEOPLE[OTHER[p]];
+    if (mine) {
+      return `<div class="bubble mine ${p}">
+        <label class="bubble-to" for="note-write">Note to ${to} 💌</label>
+        <textarea id="note-write" data-person="${p}" data-field="note_to_other" rows="2" maxlength="500"
+          placeholder="${open ? `Something sweet, silly or encouraging for ${to}…` : "Opens when the day starts"}" ${open ? "" : "readonly"}>${esc(text)}</textarea>
+      </div>`;
+    }
+    const pop = text && !shownNotes[p + d] ? " pop" : "";
+    shownNotes[p + d] = text;
+    // no note yet: a little thought cloud with "..." floating over their koala
+    if (!text) return `<div class="bubble-cloud" role="img" aria-label="No note from ${PEOPLE[p]} yet">
+      <svg viewBox="0 0 100 74" width="100" height="74" aria-hidden="true" focusable="false">
+        <path d="M22 50 C10 50 6 38 14 32 C10 22 22 14 30 19 C34 8 52 6 58 16 C66 8 82 12 82 24 C94 24 96 40 86 44 C88 52 78 56 70 52 C64 58 50 58 46 52 C38 58 26 56 22 50 Z" fill="#fffaf0" stroke="#3a2e2a" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="40" cy="63" r="4.5" fill="#fffaf0" stroke="#3a2e2a" stroke-width="2.2"/>
+        <circle cx="36" cy="70.5" r="2.6" fill="#fffaf0" stroke="#3a2e2a" stroke-width="2"/>
+        <circle class="cloud-dot" cx="38" cy="35" r="3.2" fill="#7a6a5f"/><circle class="cloud-dot" cx="50" cy="35" r="3.2" fill="#7a6a5f"/><circle class="cloud-dot" cx="62" cy="35" r="3.2" fill="#7a6a5f"/>
+      </svg></div>`;
+    return `<div class="bubble above ${p}${pop}"><span class="bubble-to">${PEOPLE[p]} says</span>${esc(text)}</div>`;
   }
 
   function stripHtml(p) {
@@ -320,7 +322,6 @@
       </div>
       ${ph === "before" ? `<p class="hint">The boxes unlock at 8 AM sharp. Get ready 🐨</p>` : ""}
       <div class="cols">${store.who === "kat" ? columnHtml("kat", d) + columnHtml("braden", d) : columnHtml("braden", d) + columnHtml("kat", d)}</div>
-      ${notesHtml(d)}
       ${forestHtml(grown)}
       <section class="card strips"><h3>The 30-day card</h3>${stripHtml("braden")}${stripHtml("kat")}
         <p class="legend"><span class="cell full">⭐</span> perfect <span class="cell half"></span> partial <span class="cell"></span> empty · pink ring = both perfect 💞</p></section>
@@ -401,12 +402,6 @@
       const pick = Number(dayBtn.dataset.day);
       // Tapping today means "follow the clock", so the page still advances at 8 AM.
       store.selected = pick === curDay() ? null : pick;
-      render();
-      return;
-    }
-    const env = t.closest("[data-envelope]");
-    if (env && !env.disabled) {
-      store.openNotes[env.dataset.envelope] = !store.openNotes[env.dataset.envelope];
       render();
       return;
     }

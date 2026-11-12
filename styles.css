@@ -177,3 +177,28 @@ footer { text-align: center; color: var(--ink-soft); margin-top: 28px; font-fami
 .who-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- Speech-bubble notes ---------- */
+.bubble { position: relative; margin: 4px 0 12px; padding: 10px 14px 12px; background: #fff; border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: 0 3px 0 var(--ink); font-size: 1.02rem; line-height: 1.35; white-space: pre-wrap; word-break: break-word; }
+/* the tail points up at the koala (the avatar is 84px wide at the left of the card head) */
+.bubble::after { content: ""; position: absolute; top: -9px; left: 34px; width: 15px; height: 15px; background: inherit; border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink); border-top-left-radius: 4px; transform: rotate(45deg); }
+.bubble.mine { white-space: normal; }
+/* the other person's note floats ABOVE their koala, tail pointing down at it, as if spoken */
+.bubble.above { margin: 2px 0 12px; }
+.bubble.above::after { top: auto; bottom: -9px; border: 0; border-right: 2.5px solid var(--ink); border-bottom: 2.5px solid var(--ink); border-radius: 0 0 4px 0; }
+.bubble.above.pop { transform-origin: 40px 100%; }
+.bubble.braden { background: #fff7f2; }
+.bubble.kat { background: #fff6f9; }
+.bubble-to { display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 2px; white-space: normal; }
+.bubble textarea { display: block; width: 100%; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; resize: none; field-sizing: content; min-height: 2.7em; font-size: 1.02rem; line-height: 1.35; }
+.bubble textarea:focus { outline: none; border: 0; }
+.bubble.mine:focus-within { outline: 3px solid color-mix(in srgb, var(--gold) 70%, transparent); outline-offset: 2px; }
+.bubble.pop { animation: bubble-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1); transform-origin: 40px 0; }
+@keyframes bubble-pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.06); opacity: 1; } 100% { transform: none; } }
+/* empty state: a thought cloud whose "..." dots take turns bobbing */
+.bubble-cloud { width: 100px; margin: 0 0 2px; }
+.bubble-cloud svg { display: block; overflow: visible; }
+.cloud-dot { animation: cloud-dot 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.cloud-dot:nth-of-type(4) { animation-delay: 0.2s; }
+.cloud-dot:nth-of-type(5) { animation-delay: 0.4s; }
+@keyframes cloud-dot { 0%, 60%, 100% { transform: none; opacity: 0.55; } 30% { transform: translateY(-3px); opacity: 1; } }

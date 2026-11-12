@@ -9,8 +9,10 @@ A one-page shared tracker. Nov 12, 2026 8:00 AM to Dec 12, 2026 8:00 AM (Pacific
 | `index.html`, `styles.css`, `app.js` | Layout, countdown, data, streaks, badges | Claude Code |
 | `config.js` | Supabase URL and anon key | You |
 | `supabase.sql` | One-time table and security setup | You (run once) |
-| `mascots.js`, `mascots.css` | Koala art and mood animations (placeholder for now) | Claude Design |
-| `fx.js` | Confetti, tick stamps, celebrations, sound (placeholder for now) | Claude Design |
+| `mascots.js`, `mascots.css` | Koala art and mood animations | Claude Design |
+| `fx.js` | Confetti, tick stamps, celebrations, sound | Claude Design |
+| `grove.js`, `grove.css` | The shared eucalyptus forest: app background, forest card, full-screen scrubber | Claude Design |
+| `preview.html` | Preview of the koalas in every mood and every effect | Claude Design |
 | `docs/CLAUDE-DESIGN-PROMPT.md` | The prompt to give Claude Design | |
 
 ## Setup
