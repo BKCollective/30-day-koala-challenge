@@ -1,20 +1,144 @@
 /*
- * MASCOT ANIMATION SWAP-IN POINT (owned by Claude Design).
- * Style hooks: svg.mascot[data-who][data-mood]. Keep everything inside prefers-reduced-motion guards.
+ * Koala mascot styles + animation (pairs with mascots.js).
+ * Hooks: svg.mascot[data-who][data-mood], parts .m-body .m-head .m-arm-l .m-arm-r etc.
+ * All motion is pure CSS and sits inside a no-preference guard, so reduced-motion
+ * users get a static pose. Idle loops are gentle and restart cleanly on re-render.
  */
-.mascot { width: 100%; height: 100%; overflow: visible; }
-.mascot .m-body { transform-origin: 50% 90%; }
-
-.mascot[data-mood="sleepy"] .m-body { animation: m-breathe 4s ease-in-out infinite; }
-.mascot[data-mood="perking"] .m-body { animation: m-sway 3s ease-in-out infinite; }
-.mascot[data-mood="almost"] .m-body { animation: m-bounce 1.6s ease-in-out infinite; }
-.mascot[data-mood="celebrating"] .m-body { animation: m-dance 0.7s ease-in-out infinite; }
-
-@keyframes m-breathe { 50% { transform: scale(1.02, 0.98); } }
-@keyframes m-sway { 50% { transform: rotate(3deg); } }
-@keyframes m-bounce { 50% { transform: translateY(-4px); } }
-@keyframes m-dance { 25% { transform: translateY(-8px) rotate(-5deg); } 75% { transform: translateY(-8px) rotate(5deg); } }
-
-@media (prefers-reduced-motion: reduce) {
-  .mascot .m-body { animation: none !important; }
+.mascot {
+  --ink: #3a2e2a;
+  --fur: #b4aea5;
+  --fur-ear: #f4d6cc;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
 }
+.mascot[data-who="kat"] { --fur: #bfc1cd; --fur-ear: #f6cfda; }
+
+/* ---------- mood visibility ---------- */
+.mascot .mo { display: none; }
+.mascot[data-mood="sleepy"] .mo.s,
+.mascot[data-mood="perking"] .mo.p,
+.mascot[data-mood="almost"] .mo.a,
+.mascot[data-mood="celebrating"] .mo.c { display: inline; }
+
+/* ---------- paint ---------- */
+.mascot .o { stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.mascot .o-thin { stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+.mascot .ln { fill: none; stroke: var(--ink); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.mascot .ln-b { stroke-width: 3.4; }
+.mascot .ln-thin { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; opacity: .55; }
+.mascot .arm-o { fill: none; stroke: var(--ink); stroke-width: 13; stroke-linecap: round; }
+.mascot .arm { fill: none; stroke: var(--fur); stroke-width: 8; stroke-linecap: round; }
+.mascot .tool-o { fill: none; stroke: var(--ink); stroke-width: 7.5; stroke-linecap: round; }
+.mascot .tool { fill: none; stroke-width: 4; stroke-linecap: round; }
+.mascot .nozzle-o { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; }
+.mascot .nozzle { fill: none; stroke: #c9c4bc; stroke-width: 2; stroke-linecap: round; }
+.mascot .band { fill: none; stroke: #7a4d32; stroke-width: 4; stroke-linecap: round; }
+.mascot .strap { fill: none; stroke: #7a4d32; stroke-width: 3; stroke-linecap: round; }
+.mascot .lens { fill: #cfe6ea; fill-opacity: .45; stroke: var(--ink); stroke-width: 2.5; }
+.mascot .lens + path { pointer-events: none; }
+.mascot .ring { fill: none; stroke: #f4b942; stroke-width: 2; }
+.mascot .handle { fill: none; stroke: var(--ink); stroke-width: 3.2; stroke-linejoin: round; }
+.mascot .m-shadow { fill: var(--ink); opacity: .12; }
+
+.mascot .f-fur { fill: var(--fur); }
+.mascot .f-ear { fill: var(--fur-ear); }
+.mascot .f-ink { fill: var(--ink); }
+.mascot .f-nose { fill: #4b3a33; }
+.mascot .f-white { fill: #fff; }
+.mascot .f-cheek { fill: #e9909f; opacity: .55; }
+.mascot .f-mouth { fill: #8e3b2a; }
+.mascot .f-blush { fill: #e9a3b5; }
+.mascot .f-gold { fill: #f4b942; }
+.mascot .f-rust { fill: #b5532f; }
+.mascot .f-rust-s { stroke: #b5532f; }
+.mascot .f-gold-s { stroke: #f4b942; }
+.mascot .f-sage { fill: #7fae8b; }
+.mascot .f-leather { fill: #8a5a3c; }
+.mascot .f-leather2 { fill: #a56f4b; }
+.mascot .f-glass { fill: #cfe6ea; }
+.mascot .f-paper { fill: #fbf3e4; }
+.mascot .f-blue { fill: #87a5c6; }
+.mascot .f-blue2 { fill: #6f8fb4; }
+.mascot .f-cam { fill: #4a4545; }
+.mascot .f-cam2 { fill: #6c6564; }
+.mascot .f-red { fill: #e0443a; }
+
+/* the dim sleepy torch */
+.mascot[data-mood="sleepy"] .m-flame { opacity: .55; transform: scale(.75); transform-origin: 26px 82px; }
+
+/* stars/sparks animate around their own centre */
+.mascot .m-star, .mascot .m-z { transform-box: fill-box; transform-origin: center; }
+
+/* celebrating Kat holds the camera up (static pose; animation adds a bob) */
+.mascot[data-who="kat"][data-mood="celebrating"] .m-cam { transform: translate(-2px, -26px) rotate(-10deg); transform-origin: 96px 66px; }
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .mascot .m-body { transform-origin: 60px 114px; }
+  .mascot .m-head { transform-origin: 60px 80px; }
+  .mascot .m-arm-l { transform-origin: 40px 85px; }
+  .mascot .m-arm-r { transform-origin: 80px 85px; }
+  .mascot .m-flame { transform-origin: 26px 82px; animation: m-flicker .32s ease-in-out infinite alternate; }
+  .mascot .m-rec { animation: m-blink 1.2s steps(1) infinite; }
+
+  /* 1. sleepy: slow breathing, droopy nod, floating z's, tiny yawn */
+  .mascot[data-mood="sleepy"] .m-body { animation: m-breathe 4s ease-in-out infinite; }
+  .mascot[data-mood="sleepy"] .m-head { animation: m-nod 4s ease-in-out infinite; }
+  .mascot[data-mood="sleepy"] .m-yawn { transform-box: fill-box; transform-origin: center; animation: m-yawn 4s ease-in-out infinite; }
+  .mascot[data-mood="sleepy"] .m-flame { animation: none; }
+  .mascot .m-z { animation: m-float 3s ease-in-out infinite; opacity: 0; }
+  .mascot .m-zzz > g:nth-child(2) .m-z { animation-delay: 1s; }
+  .mascot .m-zzz > g:nth-child(3) .m-z { animation-delay: 2s; }
+
+  /* 2. perking: curious head tilt and gentle sway */
+  .mascot[data-mood="perking"] .m-body { animation: m-sway 3.4s ease-in-out infinite; }
+  .mascot[data-mood="perking"] .m-head { animation: m-tilt 3.4s ease-in-out infinite; }
+
+  /* 3. almost: leaning in, quick little bounces, twinkly eyes */
+  .mascot[data-mood="almost"] .m-body { animation: m-bounce .7s ease-in-out infinite; }
+  .mascot[data-mood="almost"] .m-head { animation: m-lean .7s ease-in-out infinite; }
+  .mascot[data-mood="almost"] .m-twinkle { animation: m-twinkle 1.4s ease-in-out infinite; }
+
+  /* 4. celebrating: quick pop, then a happy dance */
+  .mascot[data-mood="celebrating"] .m-body { animation: m-hop .4s cubic-bezier(.3,1.6,.5,1), m-dance .8s .4s ease-in-out infinite; }
+  .mascot[data-mood="celebrating"] .m-arm-l { animation: m-wave-l .4s ease-in-out infinite alternate; }
+  .mascot[data-mood="celebrating"] .m-arm-r { animation: m-wave-r .4s .2s ease-in-out infinite alternate; }
+  .mascot .m-star { animation: m-pop 1.6s ease-out infinite; }
+  .mascot .m-stars > g:nth-child(2) .m-star { animation-delay: .4s; }
+  .mascot .m-stars > g:nth-child(3) .m-star { animation-delay: .8s; }
+  .mascot .m-stars > g:nth-child(4) .m-star { animation-delay: 1.2s; }
+
+  /* Braden's torch throws golden sparks */
+  .mascot .m-spark { transform-origin: 13px 48px; animation: m-spark .9s ease-out infinite; }
+  .mascot .m-spark:nth-child(2) { animation-delay: .15s; }
+  .mascot .m-spark:nth-child(3) { animation-delay: .3s; }
+  .mascot .m-spark:nth-child(4) { animation-delay: .45s; }
+  .mascot .m-spark:nth-child(5) { animation-delay: .6s; }
+  .mascot .m-spark:nth-child(6) { animation-delay: .75s; }
+
+  /* Kat's camera bobs and the flash pops */
+  .mascot[data-who="kat"][data-mood="celebrating"] .m-cam { animation: m-cam .8s .4s ease-in-out infinite; }
+  .mascot .m-flash { transform-box: fill-box; transform-origin: center; animation: m-flash 1.6s ease-out infinite; }
+}
+
+@keyframes m-flicker { from { transform: scale(1, 1); } to { transform: scale(.88, 1.1); } }
+@keyframes m-blink { 50% { opacity: .15; } }
+@keyframes m-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, .975); } }
+@keyframes m-nod { 0%, 100% { transform: rotate(4deg) translateY(1px); } 50% { transform: rotate(6deg) translateY(2.5px); } }
+@keyframes m-yawn { 0%, 60%, 100% { transform: scale(1); } 75% { transform: scale(1.5, 1.9); } }
+@keyframes m-float { 0% { opacity: 0; transform: translate(0, 4px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(4px, -8px); } }
+@keyframes m-sway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
+@keyframes m-tilt { 0%, 100% { transform: rotate(0); } 25%, 45% { transform: rotate(-7deg); } 70% { transform: rotate(3deg); } }
+@keyframes m-bounce { 0%, 100% { transform: translateY(0) scale(1, 1); } 15% { transform: translateY(0) scale(1.04, .96); } 50% { transform: translateY(-5px) scale(.98, 1.03); } }
+@keyframes m-lean { 0%, 100% { transform: rotate(0) translateY(1px); } 50% { transform: rotate(-2deg) translateY(2px); } }
+@keyframes m-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+@keyframes m-hop { 0% { transform: scale(.85, 1.1); } 60% { transform: translateY(-9px) scale(1.06, .96); } 100% { transform: none; } }
+@keyframes m-dance { 0%, 50%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-7px) rotate(-5deg); } 75% { transform: translateY(-7px) rotate(5deg); } }
+@keyframes m-wave-l { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+@keyframes m-wave-r { from { transform: rotate(8deg); } to { transform: rotate(-10deg); } }
+@keyframes m-pop { 0% { transform: scale(0) rotate(0); opacity: 0; } 20% { transform: scale(1.3) rotate(20deg); opacity: 1; } 55% { transform: scale(1) rotate(45deg); opacity: 1; } 100% { transform: scale(0) rotate(90deg); opacity: 0; } }
+@keyframes m-spark { 0% { transform: scale(.15); opacity: 0; } 20% { opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+@keyframes m-cam { 0%, 100% { transform: translate(-2px, -26px) rotate(-10deg); } 50% { transform: translate(-2px, -29px) rotate(-6deg); } }
+@keyframes m-flash { 0%, 8% { transform: scale(.2); opacity: 0; } 14% { transform: scale(1.25); opacity: 1; } 40%, 100% { transform: scale(.9); opacity: 0; } }

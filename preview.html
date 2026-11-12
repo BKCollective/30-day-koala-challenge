@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Koala and FX preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mascots.css">
+<style>
+  :root { --paper:#fbf3e4; --ink:#3a2e2a; --ink-soft:#7a6a5f; --line:#e6d6b8; --sage:#7fae8b; --gold:#f4b942; --card:#fffaf0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); background-image: radial-gradient(circle at 1px 1px, rgba(150,120,80,.14) 1px, transparent 0); background-size: 22px 22px; color: var(--ink); font-family: "Fredoka", system-ui, sans-serif; }
+  #fx-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 60; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-family: "Caveat", cursive; font-size: 2.6rem; margin: 0 0 4px; }
+  p.sub { margin: 0 0 24px; color: var(--ink-soft); }
+  h2 { font-size: 1.1rem; margin: 28px 0 10px; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .tile { background: var(--card); border: 2.5px solid var(--ink); border-radius: 18px; padding: 14px 10px 10px; text-align: center; box-shadow: 0 4px 0 var(--ink); }
+  .tile .m { width: 120px; height: 120px; margin: 0 auto; }
+  .tile .m.small { width: 84px; height: 84px; }
+  .tile b { display: block; margin-top: 6px; }
+  .tile small { color: var(--ink-soft); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button { font: inherit; font-weight: 600; min-height: 44px; padding: 8px 16px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink); box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+  button[aria-pressed="true"] { background: var(--gold); }
+  .col { background: var(--card); border: 2.5px solid var(--ink); border-radius: 22px; padding: 14px; max-width: 380px; box-shadow: 0 5px 0 var(--ink); }
+  .col-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .mascot-wrap { width: 84px; height: 84px; flex: none; }
+  .checks { display: grid; gap: 8px; }
+  .check { position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #fff; border: 2px solid var(--line); border-radius: 14px; cursor: pointer; }
+  .check input { position: absolute; opacity: 0; pointer-events: none; }
+  .check .box { width: 30px; height: 30px; flex: none; border: 2.5px solid var(--ink); border-radius: 9px; background: var(--paper); display: grid; place-items: center; }
+  .check .stamp { font-weight: 700; color: #fff; }
+  .check.on { background: #eaf5e6; border-color: var(--sage); }
+  .check.on .box { background: var(--sage); }
+  .check input:focus-visible + .box { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .who { display: flex; gap: 8px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<canvas id="fx-canvas" aria-hidden="true"></canvas>
+<main>
+  <h1>Koalas &amp; celebrations</h1>
+  <p class="sub">Preview for mascots.js, mascots.css and fx.js. Open this file from the repo folder so it can load them.</p>
+
+  <h2>Braden, the goldsmith</h2>
+  <div class="grid" id="g-braden"></div>
+  <h2>Kat, the camera operator</h2>
+  <div class="grid" id="g-kat"></div>
+
+  <h2>At app size (84px)</h2>
+  <div class="grid" id="g-small"></div>
+
+  <h2>Try it like the app</h2>
+  <div class="who">
+    <button data-who="braden" aria-pressed="true">Braden's card</button>
+    <button data-who="kat" aria-pressed="false">Kat's card</button>
+  </div>
+  <section class="col" id="card">
+    <div class="col-head">
+      <div class="mascot-wrap" id="card-mascot"></div>
+      <div><strong id="card-name">Braden</strong><br><small id="card-count">0 of 4 done</small></div>
+    </div>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <h2>Effects</h2>
+  <div class="row">
+    <button id="snd" aria-pressed="false">Sound off</button>
+    <button data-fx="perfectDay">perfectDay</button>
+    <button data-fx="milestone7">milestone(7)</button>
+    <button data-fx="milestone30">milestone(30)</button>
+    <button data-fx="together">together</button>
+    <button data-fx="finale">finale</button>
+  </div>
+</main>
+
+<script src="mascots.js"></script>
+<script src="fx.js"></script>
+<script>
+  const MOODS = ["sleepy", "perking", "almost", "celebrating"];
+  const LABEL = { sleepy: "0 of 4", perking: "1–2 of 4", almost: "3 of 4", celebrating: "4 of 4" };
+  function tiles(id, who, small) {
+    document.getElementById(id).innerHTML = MOODS.map((m) =>
+      `<div class="tile"><div class="m ${small ? "small" : ""}">${Mascots.render(who, m)}</div><b>${m}</b><small>${LABEL[m]}</small></div>`).join("");
+  }
+  tiles("g-braden", "braden");
+  tiles("g-kat", "kat");
+  document.getElementById("g-small").innerHTML =
+    ["braden", "kat"].flatMap((w) => ["sleepy", "celebrating"].map((m) =>
+      `<div class="tile"><div class="m small">${Mascots.render(w, m)}</div><b>${w}</b><small>${m}</small></div>`)).join("");
+
+  // mini card that behaves like the app's
+  const ITEMS = ["Drank water", "Ate a vegetable", "Went to bed on time", "No doomscrolling"];
+  let who = "braden", done = [false, false, false, false];
+  const moodFor = (n) => (n === 0 ? "sleepy" : n <= 2 ? "perking" : n === 3 ? "almost" : "celebrating");
+  function renderCard() {
+    const n = done.filter(Boolean).length;
+    document.getElementById("card-mascot").innerHTML = Mascots.render(who, moodFor(n));
+    document.getElementById("card-name").textContent = who === "braden" ? "Braden" : "Kat";
+    document.getElementById("card-count").textContent = `${n} of 4 done`;
+    document.getElementById("checks").innerHTML = ITEMS.map((t, i) =>
+      `<label class="check ${done[i] ? "on" : ""}"><input type="checkbox" data-i="${i}" ${done[i] ? "checked" : ""}>` +
+      `<span class="box" aria-hidden="true"><span class="stamp">${done[i] ? "✓" : ""}</span></span><span>${t}</span></label>`).join("");
+  }
+  renderCard();
+  document.getElementById("checks").addEventListener("change", (e) => {
+    const i = +e.target.dataset.i;
+    const before = done.filter(Boolean).length;
+    done[i] = e.target.checked;
+    renderCard();
+    const label = document.querySelector(`#checks input[data-i="${i}"]`).closest(".check");
+    label.querySelector("input").focus();
+    FX.tick(label, done[i]);
+    if (before === 3 && done.every(Boolean)) FX.perfectDay(document.getElementById("card"));
+  });
+  document.querySelectorAll("[data-who]").forEach((b) => b.addEventListener("click", () => {
+    who = b.dataset.who;
+    document.querySelectorAll("[data-who]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    renderCard();
+  }));
+
+  const snd = document.getElementById("snd");
+  snd.addEventListener("click", () => {
+    FX.setSound(!FX.sound);
+    snd.setAttribute("aria-pressed", FX.sound);
+    snd.textContent = FX.sound ? "Sound on" : "Sound off";
+    if (FX.sound) FX.tick(null, true);
+  });
+  document.querySelectorAll("[data-fx]").forEach((b) => b.addEventListener("click", () => {
+    const f = b.dataset.fx;
+    if (f === "perfectDay") FX.perfectDay(document.getElementById("card"));
+    else if (f === "milestone7") FX.milestone(7);
+    else if (f === "milestone30") FX.milestone(30);
+    else FX[f]();
+  }));
+</script>
+</body>
+</html>
