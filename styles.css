@@ -153,9 +153,14 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--gold) 70%, transpar
 .cells .cell.sel, .legend .cell.sel { border: 3px solid var(--sage); opacity: 1; color: var(--ink); }
 .cell.together { border-color: #e05e8a; border-width: 3px; }
 .cell.together::after { content: "💞"; position: absolute; top: -7px; left: -5px; font-size: 0.75rem; }
-.legend { font-size: 0.8rem; color: var(--ink-soft); display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin: 6px 0 0; }
-.legend .cell { width: 24px; height: 24px; cursor: default; }
-.legend .cell .num { font-size: 0.68rem; }
+.legend-wrap { margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--line); }
+.legend-title { margin: 0 0 8px; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 14px; font-size: 0.88rem; color: var(--ink); }
+.key { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.legend .cell { width: 24px; height: 24px; flex: none; cursor: default; }
+.legend .cell .star { top: -6px; right: -6px; font-size: 0.75rem; }
+.legend .cell.together::after { top: -8px; left: -7px; font-size: 0.65rem; }
+.legend-tip { margin: 10px 0 0; font-size: 0.82rem; color: var(--ink-soft); }
 
 
 .badge-row h4 { margin: 8px 0 4px; }

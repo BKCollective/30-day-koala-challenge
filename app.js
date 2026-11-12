@@ -304,6 +304,24 @@
     </div>`;
   }
 
+  // Key for the day circles: one swatch + plain label per item, kept together on one line.
+  function legendHtml() {
+    const item = (cls, inner, label) => `<li class="key"><span class="cell ${cls}" aria-hidden="true">${inner}</span><span>${label}</span></li>`;
+    return `<div class="legend-wrap">
+      <h4 class="legend-title">Key</h4>
+      <ul class="legend">
+        ${item("full", '<span class="star">★</span>', "All 4 boxes done")}
+        ${item("half", "", "1 to 3 boxes done")}
+        ${item("", "", "No boxes done")}
+        ${item("future", "", "Not open yet")}
+        ${item("today", "", "Today")}
+        ${item("sel", "", "Day you're viewing")}
+        ${item("together", "", "You both did all 4")}
+      </ul>
+      <p class="legend-tip">Tap any open day to view it in your box above.</p>
+    </div>`;
+  }
+
   function badgesHtml() {
     const rows = ["braden", "kat"].map((p) => {
       const pc = perfectCount(p);
@@ -376,7 +394,7 @@
       <div class="cols">${store.who === "kat" ? columnHtml("kat", d) + columnHtml("braden", d) : columnHtml("braden", d) + columnHtml("kat", d)}</div>
       ${forestHtml(grown)}
       <section class="card strips"><h3>The 30-day card</h3>${stripHtml("braden")}${stripHtml("kat")}
-        <p class="legend"><span class="cell full"><span class="num">4</span></span> perfect <span class="cell half"><span class="num">2</span></span> partial <span class="cell"><span class="num">1</span></span> empty <span class="cell today"><span class="num">9</span></span> today <span class="cell sel"><span class="num">6</span></span> showing · pink = both perfect 💞</p></section>
+        ${legendHtml()}</section>
       ${badgesHtml()}
       ${journalHtml()}
       <footer>Made with 💛 for Braden &amp; Kat · Nov 12 to Dec 12, 2026</footer>`;
