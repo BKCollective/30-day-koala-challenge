@@ -53,6 +53,9 @@
     if (n >= END) return DAYS;
     return Math.floor((n - START) / DAY) + 1;
   }
+  // TEMP QA: set to false to relock boxes to the real schedule.
+  const QA_UNLOCK = true;
+  const openThrough = () => (QA_UNLOCK ? DAYS : curDay());
   const phase = () => { const n = nowMs(); return n < START ? "before" : n >= END ? "after" : "during"; };
   const dayDate = (d) =>
     new Date(START + (d - 1) * DAY).toLocaleDateString("en-CA", { timeZone: TZ, month: "short", day: "numeric" });
@@ -136,13 +139,13 @@
   // ---------- Rendering ----------
   function selectedDay() {
     const c = curDay();
-    if (store.selected && store.selected <= Math.max(c, 1)) return store.selected;
+    if (store.selected && store.selected <= Math.max(openThrough(), 1)) return store.selected;
     return Math.max(c, 1);
   }
 
   function columnHtml(p, d) {
     const r = get(p, d);
-    const c = curDay();
+    const c = openThrough();
     const mine = store.who === p;
     const open = d >= 1 && d <= c;
     const editable = mine && open;
@@ -179,7 +182,7 @@
     const me = store.who;
     if (!me) return "";
     const them = OTHER[me];
-    const c = curDay();
+    const c = openThrough();
     const open = d >= 1 && d <= c;
     const mineR = get(me, d);
     const theirR = get(them, d);
@@ -203,7 +206,7 @@
   }
 
   function stripHtml(p) {
-    const c = curDay();
+    const c = openThrough();
     const sel = selectedDay();
     let cells = "";
     for (let d = 1; d <= DAYS; d++) {
