@@ -398,7 +398,9 @@
     const t = e.target;
     const dayBtn = t.closest("[data-day]");
     if (dayBtn && !dayBtn.disabled) {
-      store.selected = Number(dayBtn.dataset.day);
+      const pick = Number(dayBtn.dataset.day);
+      // Tapping today means "follow the clock", so the page still advances at 8 AM.
+      store.selected = pick === curDay() ? null : pick;
       render();
       return;
     }
