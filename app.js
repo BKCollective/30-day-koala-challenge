@@ -34,6 +34,7 @@
   if (!PEOPLE[store.who]) store.who = null;
   let sb = null;
   let lastDay = -1;
+  const inflight = {};
   const saveTimers = {};
   const celebrated = new Set();
 
@@ -54,7 +55,7 @@
     return Math.floor((n - START) / DAY) + 1;
   }
   // TEMP QA: set to false to relock boxes to the real schedule.
-  const QA_UNLOCK = true;
+  const QA_UNLOCK = false;
   const openThrough = () => (QA_UNLOCK ? DAYS : curDay());
   const phase = () => { const n = nowMs(); return n < START ? "before" : n >= END ? "after" : "during"; };
   const dayDate = (d) =>
@@ -79,6 +80,31 @@
   }
   const together = (d) => perfect(get("braden", d)) && perfect(get("kat", d));
 
+  // ---------- Shared forest ----------
+  // One grove addition per finished day per person, in day order. Within a day, whoever
+  // finished first (by last save time) comes first.
+  function forestEvents() {
+    const out = [];
+    for (let d = 1; d <= DAYS; d++) {
+      const done = ["braden", "kat"].filter((p) => perfect(get(p, d)));
+      done.sort((a, b) => String(get(a, d).updated_at || "").localeCompare(String(get(b, d).updated_at || "")));
+      done.forEach((p) => out.push({ day: d, person: p }));
+    }
+    return out;
+  }
+  const openForest = () => window.Grove && window.Grove.open(forestEvents());
+
+  function forestHtml(n) {
+    const next = n < 60 ? `Next up: ${window.Grove ? window.Grove.stepText(n + 1) : "something new"}.` : "The grove is complete. 🐨";
+    return `
+    <section class="card forest-card">
+      <div class="forest-head"><h3>Your shared forest 🌳</h3><span>${n} of 60 grown</span></div>
+      <div class="gv-mini" id="grove-mini" aria-hidden="true"></div>
+      <p class="forest-sub">Every day one of you finishes adds something to the grove. ${next}</p>
+      <button type="button" class="forest-btn" id="see-forest">See your shared forest</button>
+    </section>`;
+  }
+
   // ---------- Persistence ----------
   function persistLocal() {
     try { localStorage.setItem("c30_entries", JSON.stringify(store.entries)); } catch (e) {}
@@ -98,9 +124,12 @@
             if (r && r.person) {
               const mine = store.entries[key(r.person, r.day)];
               // Do not clobber text this device is actively typing.
-              if (mine && saveTimers[key(r.person, r.day)] && r.person === store.who) return;
-              store.entries[key(r.person, r.day)] = r;
-              render();
+              const rk = key(r.person, r.day);
+              if (mine && (saveTimers[rk] || inflight[rk]) && r.person === store.who) return;
+              // Skip echoes that change nothing, so a re-render never swallows an in-progress click.
+              const same = mine && [...ALL_KEYS, "exercise_text", "note_to_other"].every((f) => (mine[f] || "") === (r[f] || ""));
+              store.entries[rk] = r;
+              if (!same) render();
             }
           })
           .subscribe();
@@ -127,7 +156,10 @@
       delete saveTimers[k];
       if (sb) {
         const row = Object.assign({}, store.entries[k], { updated_at: new Date().toISOString() });
+        inflight[k] = (inflight[k] || 0) + 1;
         const { error } = await sb.from("entries").upsert(row, { onConflict: "person,day" });
+        // Keep ignoring our own echo briefly after the write returns.
+        setTimeout(() => { if (--inflight[k] <= 0) delete inflight[k]; }, 1500);
         if (error) { console.error(error); store.status = "Save failed. Check your connection."; render(); }
       }
     };
@@ -275,6 +307,7 @@
     const d = selectedDay();
     const c = curDay();
     const ph = phase();
+    const grown = forestEvents().length;
     const dateStr = ph === "before" ? "Day 1 starts Nov 12 at 8 AM" : `Day ${d} · ${dayDate(d)}`;
     const viewing = d !== c && ph === "during" ? `<button class="back" data-day="${c}">Back to today</button>` : "";
 
@@ -288,6 +321,7 @@
       ${ph === "before" ? `<p class="hint">The boxes unlock at 8 AM sharp. Get ready 🐨</p>` : ""}
       <div class="cols">${store.who === "kat" ? columnHtml("kat", d) + columnHtml("braden", d) : columnHtml("braden", d) + columnHtml("kat", d)}</div>
       ${notesHtml(d)}
+      ${forestHtml(grown)}
       <section class="card strips"><h3>The 30-day card</h3>${stripHtml("braden")}${stripHtml("kat")}
         <p class="legend"><span class="cell full">⭐</span> perfect <span class="cell half"></span> partial <span class="cell"></span> empty · pink ring = both perfect 💞</p></section>
       ${badgesHtml()}
@@ -299,6 +333,10 @@
       if (el) { el.focus(); try { el.setSelectionRange(selStart, selEnd); } catch (e) {} }
     }
     document.getElementById("who-modal").hidden = !!store.who;
+    if (window.Grove) {
+      window.Grove.background(grown);
+      window.Grove.mount(document.getElementById("grove-mini"), grown);
+    }
   }
 
   // ---------- Countdown ----------
@@ -343,6 +381,10 @@
       const pc = perfectCount(p);
       if (MILESTONES.includes(pc)) setTimeout(() => window.FX.milestone(pc), 700);
       if (together(d)) setTimeout(() => window.FX.together(), 1000);
+      if (window.Grove) {
+        const n = forestEvents().length;
+        setTimeout(() => window.Grove.toast(n, openForest), 1600);
+      }
     }
   });
 
@@ -364,6 +406,10 @@
     if (env && !env.disabled) {
       store.openNotes[env.dataset.envelope] = !store.openNotes[env.dataset.envelope];
       render();
+      return;
+    }
+    if (t.closest("#see-forest")) {
+      openForest();
       return;
     }
     if (t.id === "not-me") {
@@ -388,6 +434,7 @@
   });
 
   // ---------- Boot ----------
+  if (window.Grove) window.Grove.now = nowMs;
   render();
   tickCountdown();
   setInterval(tickCountdown, 1000);

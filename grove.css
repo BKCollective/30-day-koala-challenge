@@ -1,0 +1,82 @@
+/* The shared eucalyptus grove (pairs with grove.js). */
+
+/* ---------- scene ---------- */
+.gv-scene { position: relative; overflow: hidden; }
+.gv-scene > * { position: absolute; }
+.gv-sky, .gv-tint { inset: 0; }
+.gv-tint { pointer-events: none; }
+.gv-sun { border: 2.5px solid #3a2e2a; border-radius: 50%; transform: translateX(-50%); }
+.gv-ground { left: 0; right: 0; bottom: 0; }
+.gv-hills { display: block; width: 100%; height: 100%; }
+.gv-item { transform-origin: 50% 100%; }
+.gv-item svg { display: block; overflow: visible; }
+.gv-tree { position: relative; }
+.gv-koala { position: absolute; left: 36px; top: 104px; width: 40px; height: 44px; }
+.gv-star { width: 4px; height: 4px; border-radius: 50%; background: #fff3c9; }
+.gv-firefly { width: 7px; height: 7px; border-radius: 50%; background: #fff3a8; box-shadow: 0 0 10px 3px rgba(255, 236, 140, 0.7); }
+
+.gv-o { stroke: #3a2e2a; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.gv-ot { stroke: #3a2e2a; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.gv-ln { fill: none; stroke: #3a2e2a; stroke-width: 2.5; stroke-linecap: round; }
+.gv-bro { fill: none; stroke: #3a2e2a; stroke-width: 11; stroke-linecap: round; }
+.gv-br { fill: none; stroke: #efe4d2; stroke-width: 6.5; stroke-linecap: round; }
+.gv-sto { fill: none; stroke: #3a2e2a; stroke-width: 5; stroke-linecap: round; }
+.gv-st { fill: none; stroke: #a8956f; stroke-width: 2.2; stroke-linecap: round; }
+.gv-blo { fill: none; stroke: #3a2e2a; stroke-width: 5; stroke-linecap: round; }
+.gv-bl { fill: none; stroke: #7fae8b; stroke-width: 2.2; stroke-linecap: round; }
+.gv-drip { fill: none; stroke: #6f9e8e; stroke-width: 3; stroke-linecap: round; }
+.gv-trunk { fill: #efe4d2; } .gv-bark { fill: #d8c3ae; }
+.gv-leaf { fill: #94bfae; } .gv-leaf2 { fill: #6f9e8e; }
+.gv-soil { fill: #a5785a; } .gv-seed { fill: #8a5a3c; }
+.gv-fur { fill: #b4aea5; } .gv-furk { fill: #bfc1cd; } .gv-ear { fill: #f4d6cc; }
+.gv-ink { fill: #3a2e2a; } .gv-nose { fill: #4b3a33; } .gv-gold { fill: #f4b942; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gv-grow { animation: gv-grow 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) both; transform-origin: 50% 100%; }
+  .gv-sway { animation: gv-sway 6s ease-in-out infinite; transform-origin: 50% 100%; }
+  .gv-fly { animation: gv-flutter 3s ease-in-out infinite; }
+  .gv-firefly { animation: gv-glow 2.4s ease-in-out infinite; }
+  .gv-star { animation: gv-twinkle 3s ease-in-out infinite; }
+}
+@keyframes gv-grow { 0% { transform: scale(0); opacity: 0; } 55% { transform: scale(1.12); opacity: 1; } 75% { transform: scale(0.96); } 100% { transform: scale(1); } }
+@keyframes gv-sway { 0%, 100% { transform: rotate(-0.8deg); } 50% { transform: rotate(0.8deg); } }
+@keyframes gv-flutter { 0%, 100% { transform: translate(0, 0) scaleX(1); } 25% { transform: translate(8px, -6px) scaleX(0.4); } 50% { transform: translate(14px, 2px) scaleX(1); } 75% { transform: translate(6px, -4px) scaleX(0.4); } }
+@keyframes gv-glow { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+@keyframes gv-twinkle { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+/* ---------- app background ---------- */
+#grove-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ---------- card preview ---------- */
+.forest-card .forest-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.forest-card .forest-head span { color: var(--ink-soft); font-size: 0.9rem; }
+.gv-mini { height: 190px; border: 2px solid var(--ink); border-radius: 16px; margin: 4px 0 10px; }
+.forest-sub { margin: 0 0 12px; font-size: 0.95rem; color: var(--ink-soft); }
+.forest-btn { font: inherit; font-weight: 600; font-size: 1.05rem; width: 100%; min-height: 48px; border: 2.5px solid var(--ink); border-radius: 16px; background: #dff0e2; color: var(--ink); box-shadow: 0 3px 0 var(--ink); cursor: pointer; }
+.forest-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+/* ---------- full-screen forest view ---------- */
+.gv-lock, .gv-lock body { overflow: hidden; }
+.gv-view { position: fixed; inset: 0; z-index: 65; display: flex; flex-direction: column; background: var(--paper, #fbf3e4); }
+.gv-head { display: flex; align-items: center; gap: 10px; padding: max(12px, env(safe-area-inset-top)) 16px 10px; border-bottom: 2.5px solid #3a2e2a; background: var(--card, #fffaf0); }
+.gv-head h2 { flex: 1; min-width: 0; margin: 0; font-family: "Caveat", cursive; font-size: 1.7rem; line-height: 1.1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gv-count { font-weight: 600; font-size: 0.9rem; color: var(--ink-soft, #7a6a5f); min-width: 64px; text-align: right; }
+.gv-stage { flex: 1; min-height: 0; }
+.gv-panel { padding: 12px max(16px, calc((100% - 560px) / 2)) max(16px, env(safe-area-inset-bottom)); border-top: 2.5px solid #3a2e2a; background: var(--card, #fffaf0); display: grid; gap: 8px; width: 100%; box-sizing: border-box; }
+.gv-label { display: grid; gap: 2px; min-height: 48px; }
+.gv-label b { font-size: 1.1rem; }
+.gv-label span { color: var(--ink-soft, #7a6a5f); }
+.gv-range { width: 100%; min-height: 36px; accent-color: #7fae8b; }
+.gv-days { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-soft, #7a6a5f); margin-top: -6px; }
+.gv-btns { display: flex; gap: 10px; }
+.gv-btns .gv-play { flex: 1; }
+.gv-btn { font: inherit; font-weight: 600; font-size: 1rem; min-height: 44px; min-width: 44px; padding: 6px 14px; border: 2.5px solid #3a2e2a; border-radius: 14px; background: #fff; color: #3a2e2a; box-shadow: 0 3px 0 #3a2e2a; cursor: pointer; }
+.gv-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #3a2e2a; }
+.gv-btn:disabled { opacity: 0.5; cursor: default; }
+.gv-play { background: #dff0e2; }
+.gv-btn:focus-visible, .gv-range:focus-visible, .forest-btn:focus-visible { outline: 3px solid #f4b942; outline-offset: 2px; }
+
+/* ---------- toast ---------- */
+.gv-toast { position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 66; display: flex; align-items: center; gap: 12px; width: min(420px, calc(100% - 32px)); box-sizing: border-box; padding: 10px 10px 10px 16px; background: var(--card, #fffaf0); border: 2.5px solid #3a2e2a; border-radius: 18px; box-shadow: 0 4px 0 #3a2e2a; transition: opacity 0.5s, transform 0.5s; }
+.gv-toast span { flex: 1; font-weight: 500; }
+.gv-toast-out { opacity: 0; transform: translate(-50%, 12px); }

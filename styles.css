@@ -50,7 +50,11 @@ body {
 .daypill { display: inline-block; margin-top: 8px; background: var(--gold); border: 2px solid var(--ink); border-radius: 999px; padding: 2px 14px; font-weight: 600; font-size: 0.85rem; }
 
 /* ---------- Layout ---------- */
-.wrap { max-width: 980px; margin: -28px auto 0; padding: 0 16px 60px; }
+.wrap { position: relative; z-index: 1; max-width: 980px; margin: -28px auto 0; padding: 0 16px 60px; }
+/* text that sits straight on the grove background gets a paper backing so it reads in any sky */
+.daybar { background: color-mix(in srgb, var(--card) 92%, transparent); border: 2px solid var(--ink); border-radius: 18px; padding: 8px 14px; }
+.hint, footer { background: color-mix(in srgb, var(--card) 88%, transparent); border-radius: 14px; padding: 4px 12px; }
+footer { display: table; margin-left: auto; margin-right: auto; }
 .status { background: #ffe3e0; border: 2px solid #d9626f; border-radius: 12px; padding: 8px 12px; margin-bottom: 10px; font-size: 0.9rem; }
 .status.soft { background: var(--paper-2); border-color: var(--line); color: var(--ink-soft); }
 .daybar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 6px 0 14px; }
